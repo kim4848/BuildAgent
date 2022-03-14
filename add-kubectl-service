@@ -16,7 +16,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
         - name: build-agent
-          image: kjcontaineres.azurecr.io/dvopsagent:latest
+          image: {image}
           resources:
             requests:
               cpu: 100m
