@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: build-agent
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: build-agent
+  template:
+    metadata:
+      labels:
+        app: build-agent
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: build-agent
+          image: kjcontaineres.azurecr.io/dvopsagent:latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+          env:
+            - name: AZP_URL
+              value: "{URL}"
+            - name: AZP_TOKEN
+              value: "{PAT}"
+            - name: AZP_AGENT_NAME
+              value: "{TOKEN}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: build-agent
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: build-agent
